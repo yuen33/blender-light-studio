@@ -21,7 +21,7 @@ Light your scenes like KeyShot. Based on a Blender prototype found on Youtube.
   - Maciek Ptaszynski
 
 ## Changelog
-  - 0.9: Beta release.
+  - 1.0.0: Beta release.
 
 ## How to install
   - 01: Download the plugin at the link below:
