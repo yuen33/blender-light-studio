@@ -7,6 +7,8 @@ Light your scenes like KeyShot. Based on a Blender prototype found on Youtube.
 ## Features
   - Easily add lights to your scene around your model
   - Each light has it's own properties like intensity, color, etc.
+  - Mutiple light textures included
+  - Each light can have different light texture
   - Inspired by KeyShot lighting system
 
 ## Written by
