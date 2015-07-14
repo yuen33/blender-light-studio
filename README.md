@@ -15,7 +15,10 @@ Light your scenes like KeyShot. Based on a Blender prototype found on Youtube.
   - LeoMoon Studios
 
 ## Main Programmer
-  - Martin Zielinski
+  - Marcin Zielinski
+
+## Prototype and Initial Scene by
+  - Maciek Ptaszynski
 
 ## Changelog
   - 0.9: Beta release.
