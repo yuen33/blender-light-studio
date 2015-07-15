@@ -21,7 +21,7 @@ class Blender_Light_Studio_Properties(bpy.types.PropertyGroup):
         lightMesh = obs[obs.find('BLS_LIGHT_MESH.'+light_no)]
         lightMesh.location.x = context
     
-    light_radius = FloatProperty(name="Light Distance", default=30.0, min=0.5, set=set_light_x, step=1, get=get_light_x)
+    light_radius = FloatProperty(name="Light Distance", default=30.0, min=0.5, set=set_light_x, step=5, get=get_light_x)
     
 
 class CreateBlenderLightStudio(bpy.types.Operator):
@@ -151,7 +151,7 @@ class DeleteBSLight(bpy.types.Operator):
         return context.area.type == 'VIEW_3D' and \
                context.mode == 'OBJECT' and \
                context.scene.BLStudio.initialized and \
-               light is not None and \
+               light and \
                light.name.startswith('BLS_CONTROLLER')
 
     def execute(self, context):
@@ -232,7 +232,7 @@ class BlenderLightStudioPanelProps(bpy.types.Panel):
     
     @classmethod
     def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.objects.active.name.startswith('BLS_CONTROLLER')
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.objects.active and context.scene.objects.active.name.startswith('BLS_CONTROLLER')
     
     def draw(self, context):
         layout = self.layout
