@@ -21,12 +21,11 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - Maciek Ptaszynski
 
 ## Changelog
-  - 1.0.1: Some fixes.
-  - 1.0.0: Beta release.
+  - 1.0.1: Some fixes
+  - 1.0.0: Beta release
 
 ## How to install
-  - 01: Download the plugin at the link below:
-        [LINK COMING SOON]
+  - 01: Download "[Blender Light Studio](https://github.com/leomoon-studios/blender-light-studio/raw/master/build/blender-light-studio.zip)"
   - 02: Open Blender and go to File -> User Preferences... -> Addons
   - 03: Click on "Install from File..." and select "blender-light-studio.zip"
   - 04: After installation, the new plugin should show up and you can enable it
