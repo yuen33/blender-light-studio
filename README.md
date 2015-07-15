@@ -21,6 +21,7 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - Maciek Ptaszynski
 
 ## Changelog
+  - 1.0.1: Some fixes.
   - 1.0.0: Beta release.
 
 ## How to install
