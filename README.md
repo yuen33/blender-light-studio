@@ -1,6 +1,6 @@
 # Blender Light Studio plugin for Blender
 ## Introduction
-Light your scenes like KeyShot. Based on a Blender prototype found on Youtube.
+Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynski.
 
 [VIDEO COMING SOON]
 
