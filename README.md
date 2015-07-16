@@ -21,6 +21,9 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - Maciek Ptaszynski
 
 ## Changelog
+  - 1.1.0: 
+    - Automatically switch to cycles after clicking "Prepare Light Studio"
+    - Solo mod added
   - 1.0.1: Some fixes
   - 1.0.0: Beta release
 
@@ -36,5 +39,12 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - 09: Click on "Prepare Studio Light"
   - 10: Start adding lights by clicking "Add Light" and moving them around using the new split viewport
 
-### Compatibility
+## Future Ideas to Implement
+  - Cycles Switch: Swtich to "Cycles Render" when clicking on "Prepare Light Studio" [DONE]
+  - Solo Mode: Turn all other lights off and only show the effect of the selected light [DONE]
+  - Light Distance: Option to change light distance from 0, 0, 0
+  - Selectable Lights: Make lights (geo in 3d scene) selectable (everything else locked) to allow users use render layers
+  - Light Profiles: BIG ONE. :D
+
+## Compatibility
 Tested with Blender 2.75a
