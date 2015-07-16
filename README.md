@@ -21,6 +21,9 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - Maciek Ptaszynski
 
 ## Changelog
+  - 1.1.0: 
+           * Automatically switch to cycles after clicking "Prepare Light Studio"
+           * Solo mod added
   - 1.0.1: Some fixes
   - 1.0.0: Beta release
 
