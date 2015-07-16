@@ -3,25 +3,32 @@ from bpy.props import BoolProperty, PointerProperty, FloatProperty
 from . window_operations import splitV3DtoBLS
 import os
 
+def getLightMesh():
+    obs = bpy.context.scene.objects
+    lightGrp = obs.active
+    light_no = lightGrp.name.split('.')[1]
+    return obs[obs.find('BLS_LIGHT_MESH.'+light_no)]
 class Blender_Light_Studio_Properties(bpy.types.PropertyGroup):
     initialized = BoolProperty(default = False)
-    
+      
     def get_light_x(self):
-        obs = bpy.context.scene.objects
-        lightGrp = obs.active
-        light_no = lightGrp.name.split('.')[1]
-        lightMesh = obs[obs.find('BLS_LIGHT_MESH.'+light_no)]
         #lightMesh = [ob for ob in bpy.context.scene.objects if ob.name.startswith('BLS_LIGHT_MESH') and ob.name.endswith(light_no)][0]
-        return lightMesh.location.x
+        return getLightMesh().location.x
     
     def set_light_x(self, context):
-        obs = bpy.context.scene.objects
-        lightGrp = obs.active
-        light_no = lightGrp.name.split('.')[1]
-        lightMesh = obs[obs.find('BLS_LIGHT_MESH.'+light_no)]
-        lightMesh.location.x = context
+        getLightMesh().location.x = context
+        
+    def get_light_hidden(self):
+        return getLightMesh().hide_render
+    
+    def set_light_hidden(self, context):
+        light = getLightMesh()
+        light.hide_render = context
+        light.hide = context
+        bpy.context.scene.frame_current = bpy.context.scene.frame_current # refresh hack
     
     light_radius = FloatProperty(name="Light Distance", default=30.0, min=0.5, set=set_light_x, step=5, get=get_light_x)
+    light_muted = BoolProperty(name="Mute Light", default=False, set=set_light_hidden, get=get_light_hidden)
     
 
 class CreateBlenderLightStudio(bpy.types.Operator):
@@ -193,6 +200,56 @@ class PrepareBSLV3D(bpy.types.Operator):
         splitV3DtoBLS(context)
         context.scene.render.engine="CYCLES"
         return {"FINISHED"}
+    
+class BSL_MuteOtherLights(bpy.types.Operator):
+    bl_idname = "object.mute_other_lights"
+    bl_label = "Show Only This Light"
+    bl_description = "Show only this light."
+    bl_options = {"INTERNAL"}
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized
+    
+    def execute(self, context):
+        obs = context.scene.objects
+        lightGrp = obs.active
+        light_no = lightGrp.name.split('.')[1]
+    
+        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH')]:
+            if light.name[-3:] == light_no:
+                light.hide_render = False
+                light.hide = False
+            else:
+                light.hide_render = True
+                light.hide = True
+                
+        context.scene.frame_current = context.scene.frame_current # refresh hack
+    
+        return {"FINISHED"}
+    
+class BSL_ShowAllLights(bpy.types.Operator):
+    bl_idname = "object.show_all_lights"
+    bl_label = "Show All Lights"
+    bl_description = "Show all lights."
+    bl_options = {"INTERNAL"}
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized
+    
+    def execute(self, context):
+        obs = context.scene.objects
+        lightGrp = obs.active
+        light_no = lightGrp.name.split('.')[1]
+    
+        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH')]:
+            light.hide_render = False
+            light.hide = False
+                
+        context.scene.frame_current = context.scene.frame_current # refresh hack
+    
+        return {"FINISHED"}
 
 class BlenderLightStudioPanel(bpy.types.Panel):
     bl_idname = "blender_light_studio_panel"
@@ -237,8 +294,11 @@ class BlenderLightStudioPanelProps(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
-        col.label(text="Light:")
-        row = col.row(align=True)
-        row.prop(context.scene.BLStudio, 'light_radius')
-        #row.prop(context.scene.objects.active, "scale")
+        col.prop(context.scene.BLStudio, 'light_radius')
+        
+        col = layout.column(align=True)
+        col.label(text="Visibility:")
+        col.prop(context.scene.BLStudio, 'light_muted')
+        col.operator('object.mute_other_lights')
+        col.operator('object.show_all_lights')
         
