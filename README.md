@@ -36,5 +36,11 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - 09: Click on "Prepare Studio Light"
   - 10: Start adding lights by clicking "Add Light" and moving them around using the new split viewport
 
-### Compatibility
+## Compatibility
 Tested with Blender 2.75a
+
+## Future Ideas to Implement
+  - Solo mode: Turn all other lights off and only show the effect of the selected light
+  - Cycles Switch: Swtich to "Cycles Render" when clicking on "Prepare Light Studio"
+  - Selectable Lights: Make lights (geo in 3d scene) selectable (everything else locked) to allow users use render layers
+  - Light Profiles: BIG ONE. :D
