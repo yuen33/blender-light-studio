@@ -6,9 +6,10 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
 
 ## Features
   - Easily add lights to your scene around your model
-  - Each light has it's own properties like intensity, color, etc.
+  - Each light has it's own properties like intensity, color, scale, distance, etc.
   - Mutiple light textures included
   - Each light can have different light texture
+  - Toggle each light
   - Inspired by KeyShot lighting system
 
 ## Written by
@@ -34,11 +35,11 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - 02: Open Blender and go to File -> User Preferences... -> Addons
   - 03: Click on "Install from File..." and select "blender-light-studio.zip"
   - 04: After installation, the new plugin should show up and you can enable it
-  - 05: If it doesn't search for "studio" and enable the plugin
-  - 06: Close "User Preferences..." and switch to Cycles Render
+    - If it doesn't search for "studio" and enable the plugin
+  - 06: Close "User Preferences..."
   - 07: Go to the new tab called "Light Studio"
   - 08: Click on "Create Light Studio"
-  - 09: Click on "Prepare Studio Light"
+  - 09: Click on "Prepare Layout"
   - 10: Start adding lights by clicking "Add Light" and moving them around using the new split viewport
 
 ## Future Ideas to Implement
