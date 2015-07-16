@@ -63,6 +63,16 @@ class CreateBlenderLightStudio(bpy.types.Operator):
         context.scene.BLStudio.initialized = True
         
         return {"FINISHED"}
+
+def isFamily():
+    ob = bpy.context.scene.objects.active
+
+    if ob.name.startswith('BLENDER_LIGHT_STUDIO'): return True
+    while ob.parent:
+        ob = ob.parent
+        if ob.name.startswith('BLENDER_LIGHT_STUDIO'): return True
+    
+    return False
     
 class DeleteBlenderLightStudio(bpy.types.Operator):
     bl_idname = "scene.delete_blender_light_studio"
@@ -77,7 +87,7 @@ class DeleteBlenderLightStudio(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         scene.BLStudio.initialized = False
-        obsToRemove = [ob for ob in scene.objects if ob.name.startswith('BLS_') or ob.name.startswith('BLENDER_LIGHT_STUDIO')]
+        obsToRemove = [ob for ob in scene.objects if (ob.name.startswith('BLS_') or ob.name.startswith('BLENDER_LIGHT_STUDIO')) and isFamily()]
         for ob in obsToRemove:
             scene.objects.unlink(ob)
             for gr in ob.users_group:
@@ -172,7 +182,7 @@ class DeleteBSLight(bpy.types.Operator):
         
         lightGrp = light.parent
         ending = lightGrp.name.split('.')[1]
-        obsToRemove = [ob for ob in scene.objects if ob.name.startswith('BLS_') and ob.name.endswith(ending)]
+        obsToRemove = [ob for ob in scene.objects if (ob.name.startswith('BLS_') and ob.name.endswith(ending)) and isFamily()]
         
         for ob in obsToRemove:
             scene.objects.unlink(ob)
@@ -216,7 +226,7 @@ class BSL_MuteOtherLights(bpy.types.Operator):
         lightGrp = obs.active
         light_no = lightGrp.name.split('.')[1]
     
-        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH')]:
+        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH') and isFamily()]:
             if light.name[-3:] == light_no:
                 light.hide_render = False
                 light.hide = False
@@ -243,7 +253,7 @@ class BSL_ShowAllLights(bpy.types.Operator):
         lightGrp = obs.active
         light_no = lightGrp.name.split('.')[1]
     
-        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH')]:
+        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH') and isFamily()]:
             light.hide_render = False
             light.hide = False
                 

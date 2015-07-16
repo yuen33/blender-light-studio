@@ -22,7 +22,7 @@ bl_info = {
     "name": "Blender Light Studio",
     "description": "Easy setup for complex studio lighting",
     "author": "LeoMoon Studios, Marcin Zielinski, special thanks to Maciek Ptaszynski for initial scene",
-    "version": (1, 1, 0),
+    "version": (1, 1, 1),
     "blender": (2, 75, 0),
     "location": "View3D -> Tools -> Light Studio",
     "warning": "This addon is still in development.",
