@@ -111,7 +111,7 @@ class AddBSLight(bpy.types.Operator):
     bl_idname = "scene.add_blender_studio_light"
     bl_label = "Add Studio Light"
     bl_description = "Add Light to Studio"
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
     
     @classmethod
     def poll(cls, context):
@@ -159,7 +159,7 @@ class DeleteBSLight(bpy.types.Operator):
     bl_idname = "scene.delete_blender_studio_light"
     bl_label = "Delete Studio Light"
     bl_description = "Delete selected Light from Studio"
-    bl_options = {"REGISTER"}
+    bl_options = {"REGISTER", "UNDO"}
     
     @classmethod
     def poll(cls, context):
@@ -169,7 +169,7 @@ class DeleteBSLight(bpy.types.Operator):
                context.mode == 'OBJECT' and \
                context.scene.BLStudio.initialized and \
                light and \
-               light.name.startswith('BLS_CONTROLLER')
+               (light.name.startswith('BLS_CONTROLLER') or light.name.startswith('BLS_LIGHT_MESH'))
 
     def execute(self, context):
         scene = bpy.context.scene
@@ -198,7 +198,7 @@ class DeleteBSLight(bpy.types.Operator):
     
 class PrepareBSLV3D(bpy.types.Operator):
     bl_idname = "scene.prepare_blender_studio_light"
-    bl_label = "Prepare Studio Light"
+    bl_label = "Prepare Layout"
     bl_description = "Split current Viewport for easier Studio usage."
     bl_options = {"REGISTER"}
     
@@ -215,7 +215,7 @@ class BSL_MuteOtherLights(bpy.types.Operator):
     bl_idname = "object.mute_other_lights"
     bl_label = "Show Only This Light"
     bl_description = "Show only this light."
-    bl_options = {"INTERNAL"}
+    bl_options = {"INTERNAL", "UNDO"}
     
     @classmethod
     def poll(cls, context):
@@ -242,7 +242,7 @@ class BSL_ShowAllLights(bpy.types.Operator):
     bl_idname = "object.show_all_lights"
     bl_label = "Show All Lights"
     bl_description = "Show all lights."
-    bl_options = {"INTERNAL"}
+    bl_options = {"INTERNAL", "UNDO"}
     
     @classmethod
     def poll(cls, context):
@@ -275,9 +275,10 @@ class BlenderLightStudioPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
-        col.label(text="Create/Delete:")
+        col.label(text="Studio:")
         if not context.scene.BLStudio.initialized: col.operator('scene.create_blender_light_studio')
         if context.scene.BLStudio.initialized: col.operator('scene.delete_blender_light_studio')
+        col.operator('scene.prepare_blender_studio_light')
 
         col = layout.column(align=True)
         col.label(text="Lights:")
@@ -285,11 +286,18 @@ class BlenderLightStudioPanel(bpy.types.Panel):
         row.operator('scene.add_blender_studio_light', text='Add Light')
         row.operator('scene.delete_blender_studio_light', text='Delete Light')
         
-        ol = layout.column(align=True)
-        col.label(text="Studio:")
-        row = col.row(align=True)
-        row.operator('scene.prepare_blender_studio_light')
+        if context.scene.objects.active and (context.scene.objects.active.name.startswith('BLS_CONTROLLER') or context.scene.objects.active.name.startswith('BLS_LIGHT_MESH')):
+            col = layout.column(align=True)
+            col.label(text="Selected Light:")
+            col.prop(context.scene.BLStudio, 'light_radius')
+    
+            col = layout.column(align=True)
+            col.prop(context.scene.BLStudio, 'light_muted')
+            col = layout.column(align=True)
+            col.operator('object.mute_other_lights')
+            col.operator('object.show_all_lights')
 
+'''
 class BlenderLightStudioPanelProps(bpy.types.Panel):
     bl_idname = "blender_light_studio_panel_props"
     bl_space_type = 'VIEW_3D'
@@ -304,11 +312,5 @@ class BlenderLightStudioPanelProps(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
-        col.prop(context.scene.BLStudio, 'light_radius')
-        
-        col = layout.column(align=True)
         col.label(text="Visibility:")
-        col.prop(context.scene.BLStudio, 'light_muted')
-        col.operator('object.mute_other_lights')
-        col.operator('object.show_all_lights')
-        
+'''
