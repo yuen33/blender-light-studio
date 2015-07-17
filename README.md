@@ -22,6 +22,10 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - Maciek Ptaszynski
 
 ## Changelog
+  - 1.2.0:
+    - Protection from accidental deletion
+    - Light objects made selectable
+    - Control plane lights up when corresponding light object is selected, and vice versa
   - 1.1.1:
     - Added Light visibility toggles
     - Added Light Distance option
