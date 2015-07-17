@@ -51,6 +51,7 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
 ## Future Ideas to Implement
   - Light Profiles
   - Special Lights (Dome, Stripes, etc...)
+  - Special Node Setups (Infinite Ground Effect, Gradient Background, etc...)
 
 ## Compatibility
 Tested with Blender 2.75a
