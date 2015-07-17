@@ -261,9 +261,9 @@ class BSL_ShowAllLights(bpy.types.Operator):
     
         return {"FINISHED"}
 
-class BlenderLightStudioPanel(bpy.types.Panel):
-    bl_idname = "blender_light_studio_panel"
-    bl_label = "Blender Light Studio"
+class BlenderLightStudioPanelStudio(bpy.types.Panel):
+    bl_idname = "blender_light_studio_panel_studio"
+    bl_label = "Studio"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
     bl_category = "Light Studio"
@@ -275,20 +275,43 @@ class BlenderLightStudioPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
-        col.label(text="Studio:")
         if not context.scene.BLStudio.initialized: col.operator('scene.create_blender_light_studio')
         if context.scene.BLStudio.initialized: col.operator('scene.delete_blender_light_studio')
         col.operator('scene.prepare_blender_studio_light')
 
+class BlenderLightStudioPanelLight(bpy.types.Panel):
+    bl_idname = "blender_light_studio_panel_light"
+    bl_label = "Lights"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Light Studio"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'    
+    
+    def draw(self, context):
+        layout = self.layout
         col = layout.column(align=True)
-        col.label(text="Lights:")
         row = col.row(align=True)
         row.operator('scene.add_blender_studio_light', text='Add Light')
         row.operator('scene.delete_blender_studio_light', text='Delete Light')
-        
+
+class BlenderLightStudioPanelSelected(bpy.types.Panel):
+    bl_idname = "blender_light_studio_panel_selected"
+    bl_label = "Selected Light"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Light Studio"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'    
+    
+    def draw(self, context):
         if context.scene.objects.active and (context.scene.objects.active.name.startswith('BLS_CONTROLLER') or context.scene.objects.active.name.startswith('BLS_LIGHT_MESH')):
+            layout = self.layout
             col = layout.column(align=True)
-            col.label(text="Selected Light:")
             col.prop(context.scene.BLStudio, 'light_radius')
     
             col = layout.column(align=True)
@@ -296,21 +319,4 @@ class BlenderLightStudioPanel(bpy.types.Panel):
             col = layout.column(align=True)
             col.operator('object.mute_other_lights')
             col.operator('object.show_all_lights')
-
-'''
-class BlenderLightStudioPanelProps(bpy.types.Panel):
-    bl_idname = "blender_light_studio_panel_props"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_label = "BLS Properties"
-    bl_options = {'DEFAULT_CLOSED'}
-    
-    @classmethod
-    def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.objects.active and context.scene.objects.active.name.startswith('BLS_CONTROLLER')
-    
-    def draw(self, context):
-        layout = self.layout
-        col = layout.column(align=True)
-        col.label(text="Visibility:")
-'''
+            
