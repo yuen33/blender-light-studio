@@ -1,0 +1,19 @@
+▼ Studio
+  [Create Light Studio]
+  [Prepare Layout]
+  
+▼ Light Profiles
+  +----------------+ [+]
+  | Default        | [-]
+  |                |
+  |                |
+  +----------------+
+  
+▼ Lights
+  [Add Light][Delete Light]
+  
+▼ Selected Light
+  (Light Distance 30.00)
+  [] Mute Selected Light
+  [Show Only This Light]
+  [Show All Lights]
