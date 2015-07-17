@@ -47,7 +47,6 @@ Light your scenes like KeyShot. Based on a Blender prototype by Maciek Ptaszynsk
   - 10: Start adding lights by clicking "Add Light" and moving them around using the new split viewport
 
 ## Future Ideas to Implement
-  - Selectable Lights: Make lights (geo in 3d scene) selectable (everything else locked) to allow users use render layers
   - Light Profiles: BIG ONE. :D
 
 ## Compatibility
