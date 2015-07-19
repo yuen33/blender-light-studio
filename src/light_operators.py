@@ -152,6 +152,8 @@ class AddBSLight(bpy.types.Operator):
         panel.select = True
         textId.data.body = str(int(panel.name.split('.')[1])+1)
         context.scene.objects.active = panel
+
+        bpy.context.scene.frame_current = bpy.context.scene.frame_current # refresh hack
                 
         return {"FINISHED"}
     

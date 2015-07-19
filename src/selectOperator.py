@@ -20,15 +20,15 @@ class SelectionOperator(bpy.types.Operator):
     
     def execute(self, context):
         bpy.ops.view3d.select(extend=self.extend, deselect=self.deselect, toggle=self.toggle, center=self.center, enumerate=self.enumerate, object=self.object, location=(self.location[0] , self.location[1] ))
-        obname = context.active_object.name
-        if obname.startswith('BLS_CONTROLLER'):
-            lno = obname.split('.')[1]
-            lno = context.scene.objects.find('BLS_LIGHT_MESH.'+lno)
-            if lno is not -1:
-                context.scene.objects[lno].select = True
+        if context.active_object:
+            obname = context.active_object.name
+            if obname.startswith('BLS_CONTROLLER'):
+                lno = obname.split('.')[1]
+                lno = context.scene.objects.find('BLS_LIGHT_MESH.'+lno)
+                if lno is not -1:
+                    context.scene.objects[lno].select = True
+            context.scene.frame_current = context.scene.frame_current
             
-        context.scene.frame_current = context.scene.frame_current
-
         return {'FINISHED'}
 
     def invoke(self, context, event):
