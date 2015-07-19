@@ -22,6 +22,8 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Maciek Ptaszynski
 
 ## Changelog
+  - 1.2.1:
+    - Minor bugfix
   - 1.2.0:
     - Protection from accidental deletion
     - Light objects made selectable
