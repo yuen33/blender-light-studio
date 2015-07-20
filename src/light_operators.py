@@ -185,7 +185,7 @@ class DeleteBSLight(bpy.types.Operator):
         
         lightGrp = light.parent
         ending = lightGrp.name.split('.')[1]
-        obsToRemove = [ob for ob in scene.objects if (ob.name.startswith('BLS_') and ob.name.endswith(ending)) and isFamily()]
+        obsToRemove = [ob for ob in scene.objects if ob.name.startswith('BLS_') and ob.name.endswith(ending) and isFamily()]
         
         for ob in obsToRemove:
             scene.objects.unlink(ob)
