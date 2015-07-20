@@ -7,8 +7,8 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
 ## Features
   - Add/Remove lights around objects (0,0,0)
   - Add unlimited number of lights
-  - Each light has options like intensity, color, scale, distance, etc...
-  - Easy 2D manupulation of light which translates to 3D positioning of light
+  - Each light has options like intensity, color, scale, distance, etc.
+  - Easy 2D manipulation of light which translates to 3D positioning of light
   - Realistic HDR light textures included
   - Each light can have different light texture
   - Toggle lights
@@ -56,8 +56,8 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
 
 ## Future Ideas to Implement
   - Light Profiles
-  - Special Lights (Dome, Stripes, etc...)
-  - Special Node Setups (Infinite Ground Effect, Gradient Background, etc...)
+  - Special Lights (Dome, Stripes, etc.)
+  - Special Node Setups (Infinite Ground Effect, Gradient Background, etc.)
 
 ## Compatibility
 Tested with Blender 2.75a
