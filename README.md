@@ -5,12 +5,16 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
 [![Light Studio plugin for Blender](http://img.youtube.com/vi/YG2D7aJQ_K4/0.jpg)](https://www.youtube.com/watch?t=129&v=YG2D7aJQ_K4)
 
 ## Features
-  - Easily add lights to your scene around your model
-  - Each light has it's own properties like intensity, color, scale, distance, etc...
-  - Mutiple light textures included
+  - Add/Remove lights around objects (0,0,0)
+  - Add unlimited number of lights
+  - Each light has options like intensity, color, scale, distance, etc...
+  - Easy 2D manupulation of light which translates to 3D positioning of light
+  - Realistic HDR light textures included
   - Each light can have different light texture
-  - Toggle each light
-  - Inspired by KeyShot lighting system
+  - Toggle lights
+  - Isolate light
+  - Protected by accidental deletes (Use "Delete Light" button instead)
+  - Lights are selectable to use render layers
 
 ## Written by
   - LeoMoon Studios
