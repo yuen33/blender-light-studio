@@ -128,7 +128,7 @@ class AddBSLight(bpy.types.Operator):
         A = set(bpy.data.groups[:])
         
         bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Group\\',
-        directory=dir+"\\BLS_V1_02_simple.blend\\Group\\",
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Group\\"),
         filename="BLS_Light",
         active_layer=False)
         
