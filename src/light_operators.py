@@ -47,13 +47,12 @@ class CreateBlenderLightStudio(bpy.types.Operator):
         dir = os.path.dirname(script_file)
         
         bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        #directory="D:/Downloads/BlightStudio/BLS_V1_02_simple.blend\\Object\\",
-        directory=dir+"\\BLS_V1_02_simple.blend\\Object\\",
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
         filename="BLENDER_LIGHT_STUDIO",
         active_layer=False)
 
         bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        directory=dir+"\\BLS_V1_02_simple.blend\\Object\\",
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
         filename="BLS_PANEL",
         active_layer=False)
         
@@ -87,7 +86,7 @@ class DeleteBlenderLightStudio(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         scene.BLStudio.initialized = False
-        obsToRemove = [ob for ob in scene.objects if (ob.name.startswith('BLS_') or ob.name.startswith('BLENDER_LIGHT_STUDIO')) and isFamily()]
+        obsToRemove = [ob for ob in scene.objects if ob.name.startswith('BLS_') or ob.name.startswith('BLENDER_LIGHT_STUDIO') and isFamily()]
         for ob in obsToRemove:
             scene.objects.unlink(ob)
             for gr in ob.users_group:
@@ -148,6 +147,8 @@ class AddBSLight(bpy.types.Operator):
         #textId.data.body = str(len(bls.children)-1)
         
         bpy.ops.object.select_all(action='DESELECT')
+        light = [p for p in new_objects if p.name.startswith('BLS_LIGHT_MESH')][0]
+        light.select = True
         panel = [p for p in new_objects if p.name.startswith('BLS_CONTROLLER')][0]
         panel.select = True
         textId.data.body = str(int(panel.name.split('.')[1])+1)
