@@ -44,7 +44,7 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - 1.0.0: Beta release
 
 ## How to install
-  - 01: Download "[Blender Light Studio](https://github.com/leomoon-studios/blender-light-studio/archive/master.zip)"
+  - 01: Download "[Blender Light Studio](archive/master.zip)"
   - 02: Open Blender and go to File -> User Preferences... -> Addons
   - 03: Click on "Install from File..." and select "blender-light-studio.zip"
   - 04: After installation, the new plugin should show up and you can enable it
