@@ -26,10 +26,10 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Maciek Ptaszynski
 
 ## Changelog
-  - 1.2.3: Solved linux problems
+  - 1.2.3: Solved Linux problems
   - 1.2.2:
     - Linux paths bugfix
-    - Control plane highlighs when new light added
+    - Control plane highlights when new light added
   - 1.2.1: Minor bugfix
   - 1.2.0:
     - Protection from accidental deletion
