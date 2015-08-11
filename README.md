@@ -62,5 +62,8 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Special Lights (Dome, Stripes, etc.)
   - Special Node Setups (Infinite Ground Effect, Gradient Background, etc.)
 
+## Donations
+Speed of future developments depends on donations. 100% of donations will go towards development of this plugin. Your donatoins are much appreciated. You can donate to my [leomoon] gmail account with the subject of Blender Light Studio Development.
+
 ## Compatibility
 Tested with Blender 2.75a
