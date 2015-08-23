@@ -1,6 +1,8 @@
 import bpy
-from bpy.props import BoolProperty, PointerProperty, FloatProperty
+from bpy.props import BoolProperty, PointerProperty, FloatProperty, CollectionProperty, IntProperty, StringProperty
 from . window_operations import splitV3DtoBLS
+from . light_profiles import ListItem, update_list_index
+from . common import isFamily, family, findLightGrp, refreshMaterials
 import os
 
 def getLightMesh():
@@ -8,11 +10,11 @@ def getLightMesh():
     lightGrp = obs.active
     light_no = lightGrp.name.split('.')[1]
     return obs[obs.find('BLS_LIGHT_MESH.'+light_no)]
+
 class Blender_Light_Studio_Properties(bpy.types.PropertyGroup):
     initialized = BoolProperty(default = False)
       
     def get_light_x(self):
-        #lightMesh = [ob for ob in bpy.context.scene.objects if ob.name.startswith('BLS_LIGHT_MESH') and ob.name.endswith(light_no)][0]
         return getLightMesh().location.x
     
     def set_light_x(self, context):
@@ -26,9 +28,15 @@ class Blender_Light_Studio_Properties(bpy.types.PropertyGroup):
         light.hide_render = context
         light.hide = context
         bpy.context.scene.frame_current = bpy.context.scene.frame_current # refresh hack
+        refreshMaterials()
     
     light_radius = FloatProperty(name="Light Distance", default=30.0, min=0.5, set=set_light_x, step=5, get=get_light_x)
     light_muted = BoolProperty(name="Mute Light", default=False, set=set_light_hidden, get=get_light_hidden)
+    
+    ''' Profile List '''
+    profile_list = CollectionProperty(type = ListItem)
+    list_index = IntProperty(name = "Index for profile_list", default = 0, update=update_list_index)
+    last_empty = StringProperty(name="Name of last Empty holding profile", default="")
     
 
 class CreateBlenderLightStudio(bpy.types.Operator):
@@ -40,7 +48,6 @@ class CreateBlenderLightStudio(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and not context.scene.BLStudio.initialized
-        #return not [ob for ob in bpy.context.scene.objects if ob.name.startswith('BLENDER_LIGHT_STUDIO')]
     
     def execute(self, context):
         script_file = os.path.realpath(__file__)
@@ -59,20 +66,12 @@ class CreateBlenderLightStudio(bpy.types.Operator):
         cpanel = [ob for ob in bpy.context.scene.objects if ob.name.startswith('BLS_PANEL')][0]
         cpanel.parent = [ob for ob in bpy.context.scene.objects if ob.name.startswith('BLENDER_LIGHT_STUDIO')][0]
 
+        bpy.ops.bls_list.new_profile()
+        
         context.scene.BLStudio.initialized = True
         
         return {"FINISHED"}
-
-def isFamily():
-    ob = bpy.context.scene.objects.active
-
-    if ob.name.startswith('BLENDER_LIGHT_STUDIO'): return True
-    while ob.parent:
-        ob = ob.parent
-        if ob.name.startswith('BLENDER_LIGHT_STUDIO'): return True
-    
-    return False
-    
+  
 class DeleteBlenderLightStudio(bpy.types.Operator):
     bl_idname = "scene.delete_blender_light_studio"
     bl_label = "Delete Studio"
@@ -86,13 +85,20 @@ class DeleteBlenderLightStudio(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         scene.BLStudio.initialized = False
-        obsToRemove = [ob for ob in scene.objects if ob.name.startswith('BLS_') or ob.name.startswith('BLENDER_LIGHT_STUDIO') and isFamily()]
+        
+        ''' for each profile from this scene: delete objects then remove from list '''
+        while len(context.scene.BLStudio.profile_list):
+            bpy.ops.bls_list.delete_profile()
+            
+        obsToRemove = [ob for ob in scene.objects if isFamily(ob)]
         for ob in obsToRemove:
             scene.objects.unlink(ob)
             for gr in ob.users_group:
                 gr.objects.unlink(ob)
             ob.user_clear()
+            ob.use_fake_user = False
             bpy.data.objects.remove(ob)
+            
         
         return {"FINISHED"}
      
@@ -124,7 +130,6 @@ class AddBSLight(bpy.types.Operator):
         bls = [ob for ob in bpy.context.scene.objects if ob.name.startswith('BLENDER_LIGHT_STUDIO')][0]
     
         # before
-        #A = set(bpy.data.objects[:])
         A = set(bpy.data.groups[:])
         
         bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Group\\',
@@ -134,27 +139,26 @@ class AddBSLight(bpy.types.Operator):
         
         
         # after operation
-        #B = set(bpy.data.objects[:])
         B = set(bpy.data.groups[:])
 
         # whats the difference
         new_objects = (A ^ B).pop().objects
         
-        lightGrp = [l for l in new_objects if l.name.startswith('BLS_LIGHT_GRP')][0]
-        lightGrp.parent = [ob for ob in bpy.context.scene.objects if ob.name.startswith('BLENDER_LIGHT_STUDIO')][0]
+        for ob in new_objects:
+            ob.use_fake_user = True
         
-        textId = [l for l in new_objects if l.name.startswith('BLS_ID')][0]
-        #textId.data.body = str(len(bls.children)-1)
+        lightGrp = [l for l in new_objects if l.name.startswith('BLS_LIGHT_GRP')][0]
+        lightGrp.parent = [ob for ob in bpy.context.scene.objects if ob and ob.name.startswith('BLS_PROFILE') and isFamily(ob)][0]
         
         bpy.ops.object.select_all(action='DESELECT')
         light = [p for p in new_objects if p.name.startswith('BLS_LIGHT_MESH')][0]
         light.select = True
         panel = [p for p in new_objects if p.name.startswith('BLS_CONTROLLER')][0]
         panel.select = True
-        textId.data.body = str(int(panel.name.split('.')[1])+1)
         context.scene.objects.active = panel
 
         bpy.context.scene.frame_current = bpy.context.scene.frame_current # refresh hack
+        refreshMaterials()
                 
         return {"FINISHED"}
     
@@ -166,7 +170,6 @@ class DeleteBSLight(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
-        #light = context.active_object
         light = context.scene.objects.active
         return context.area.type == 'VIEW_3D' and \
                context.mode == 'OBJECT' and \
@@ -175,23 +178,25 @@ class DeleteBSLight(bpy.types.Operator):
                (light.name.startswith('BLS_CONTROLLER') or light.name.startswith('BLS_LIGHT_MESH'))
 
     def execute(self, context):
-        scene = bpy.context.scene
+        scene = context.scene
         oldlaysArea = context.area.spaces[0].layers[:]
         oldlaysScene = context.scene.layers[:]
-        context.area.spaces[0].layers = [True] + [False]*18 + [True]
-        context.scene.layers = [True] + [False]*18 + [True]
+        context.area.spaces[0].layers = [True]*20
+        context.scene.layers = [True]*20
         
         light = bpy.context.active_object
         
-        lightGrp = light.parent
+        lightGrp = findLightGrp(light)
         ending = lightGrp.name.split('.')[1]
-        obsToRemove = [ob for ob in scene.objects if ob.name.startswith('BLS_') and ob.name.endswith(ending) and isFamily()]
         
-        for ob in obsToRemove:
+        #obsToRemove = [ob for ob in scene.objects if not ob.name.startswith('BLS_PROFILE.') and ob.name.endswith(ending) and isFamily(ob)]
+        #print(obsToRemove)
+        for ob in family(lightGrp):
             scene.objects.unlink(ob)
             for gr in ob.users_group:
                 gr.objects.unlink(ob)
             ob.user_clear()
+            ob.use_fake_user = False
             bpy.data.objects.remove(ob)
         
         context.area.spaces[0].layers = oldlaysArea
@@ -229,7 +234,7 @@ class BSL_MuteOtherLights(bpy.types.Operator):
         lightGrp = obs.active
         light_no = lightGrp.name.split('.')[1]
     
-        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH') and isFamily()]:
+        for light in (ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH') and isFamily(ob)):
             if light.name[-3:] == light_no:
                 light.hide_render = False
                 light.hide = False
@@ -238,6 +243,7 @@ class BSL_MuteOtherLights(bpy.types.Operator):
                 light.hide = True
                 
         context.scene.frame_current = context.scene.frame_current # refresh hack
+        refreshMaterials()
     
         return {"FINISHED"}
     
@@ -256,11 +262,12 @@ class BSL_ShowAllLights(bpy.types.Operator):
         lightGrp = obs.active
         light_no = lightGrp.name.split('.')[1]
     
-        for light in [ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH') and isFamily()]:
+        for light in (ob for ob in obs if ob.name.startswith('BLS_LIGHT_MESH') and isFamily(ob)):
             light.hide_render = False
             light.hide = False
                 
         context.scene.frame_current = context.scene.frame_current # refresh hack
+        refreshMaterials()
     
         return {"FINISHED"}
 
@@ -291,7 +298,7 @@ class BlenderLightStudioPanelLight(bpy.types.Panel):
     
     @classmethod
     def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'    
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and len(context.scene.BLStudio.profile_list)
     
     def draw(self, context):
         layout = self.layout
