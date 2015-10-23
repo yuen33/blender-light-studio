@@ -5,6 +5,8 @@ from . light_profiles import ListItem, update_list_index
 from . common import isFamily, family, findLightGrp, refreshMaterials
 import os
 
+_ = os.sep
+
 def getLightMesh():
     obs = bpy.context.scene.objects
     lightGrp = obs.active
@@ -53,13 +55,13 @@ class CreateBlenderLightStudio(bpy.types.Operator):
         script_file = os.path.realpath(__file__)
         dir = os.path.dirname(script_file)
         
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Object'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Object"+_),
         filename="BLENDER_LIGHT_STUDIO",
         active_layer=False)
 
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Object'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Object"+_),
         filename="BLS_PANEL",
         active_layer=False)
         
@@ -132,8 +134,8 @@ class AddBSLight(bpy.types.Operator):
         # before
         A = set(bpy.data.groups[:])
         
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Group\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Group\\"),
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Group'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Group"+_),
         filename="BLS_Light",
         active_layer=False)
         

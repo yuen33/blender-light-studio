@@ -4,6 +4,8 @@ import os
 from . common import isFamily, family, findLightGrp
 from itertools import chain
 
+_ = os.sep
+
 class ListItem(bpy.types.PropertyGroup):
     """ Group of properties representing an item in the list """
     def update_name(self, context):
@@ -59,8 +61,8 @@ class LIST_OT_NewItem(bpy.types.Operator):
         
         script_file = os.path.realpath(__file__)
         dir = os.path.dirname(script_file)
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Object'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Object"+_),
         filename="BLS_PROFILE.000",
         active_layer=False)
         
