@@ -26,6 +26,9 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Maciek Ptaszynski
 
 ## Changelog
+  - 2.0.1:
+    - Added Light Profiles feature
+	- Added light preview for each light
   - 1.2.3: Solved Linux problems
   - 1.2.2:
     - Linux paths bugfix
@@ -58,9 +61,7 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - 12: Happy Blending!
 
 ## Future Ideas to Implement
-  - Light Profiles
-  - Special Lights (Dome, Stripes, etc.)
-  - Special Node Setups (Infinite Ground Effect, Gradient Background, etc.)
+  - Change [Add Light] to show a list of available lights instead of changing light texture after creating one...
 
 ## Compatibility
 Tested with Blender 2.75a
