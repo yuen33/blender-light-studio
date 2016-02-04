@@ -26,6 +26,7 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Maciek Ptaszynski
 
 ## Changelog
+  - 2.0.2: Fix for linux
   - 2.0.1:
     - Added Light Profiles feature
 	- Added light preview for each light
