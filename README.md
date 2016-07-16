@@ -1,8 +1,8 @@
 # Light Studio plugin for Blender
 ## Introduction
-Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptaszynski and inspired by Keyshot lighting system.
+Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptaszynski and inspired by HDR Light Studio 5 lighting system.
 
-[![Light Studio plugin for Blender](http://img.youtube.com/vi/YG2D7aJQ_K4/0.jpg)](https://www.youtube.com/watch?t=129&v=YG2D7aJQ_K4)
+[![Light Studio plugin for Blender](http://img.youtube.com/vi/YG2D7aJQ_K4/0.jpg)](https://www.youtube.com/watch?v=YG2D7aJQ_K4)
 
 ## Features
   - Add/Remove lights around objects (0,0,0)
@@ -26,6 +26,10 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Maciek Ptaszynski
 
 ## Changelog
+  - 2.0.2: Fix for linux
+  - 2.0.1:
+    - Added Light Profiles feature
+	- Added light preview for each light
   - 1.2.3: Solved Linux problems
   - 1.2.2:
     - Linux paths bugfix
@@ -58,9 +62,7 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - 12: Happy Blending!
 
 ## Future Ideas to Implement
-  - Light Profiles
-  - Special Lights (Dome, Stripes, etc.)
-  - Special Node Setups (Infinite Ground Effect, Gradient Background, etc.)
+  - Change [Add Light] to show a list of available lights instead of changing light texture after creating one...
 
 ## Donations
 Speed of future developments depends on donations. 100% of donations will go towards development of this plugin. Your donatoins are much appreciated. You can donate to my [leomoon] gmail account with the subject of Blender Light Studio Development.

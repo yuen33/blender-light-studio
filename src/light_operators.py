@@ -5,6 +5,8 @@ from . light_profiles import ListItem, update_list_index
 from . common import isFamily, family, findLightGrp, refreshMaterials
 import os
 
+_ = os.sep
+
 def getLightMesh():
     obs = bpy.context.scene.objects
     lightGrp = obs.active
@@ -53,13 +55,13 @@ class CreateBlenderLightStudio(bpy.types.Operator):
         script_file = os.path.realpath(__file__)
         dir = os.path.dirname(script_file)
         
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Object'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Object"+_),
         filename="BLENDER_LIGHT_STUDIO",
         active_layer=False)
 
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Object'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Object"+_),
         filename="BLS_PANEL",
         active_layer=False)
         
@@ -132,8 +134,8 @@ class AddBSLight(bpy.types.Operator):
         # before
         A = set(bpy.data.groups[:])
         
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Group\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Group\\"),
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Group'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Group"+_),
         filename="BLS_Light",
         active_layer=False)
         
@@ -307,6 +309,38 @@ class BlenderLightStudioPanelLight(bpy.types.Panel):
         row.operator('scene.add_blender_studio_light', text='Add Light')
         row.operator('scene.delete_blender_studio_light', text='Delete Light')
 
+class BLS_ProfileList(bpy.types.Panel):
+    bl_idname = "bls_profile_list"
+    bl_label = "Profiles"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Light Studio"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized
+            
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        
+        props = scene.BLStudio
+        
+        row = layout.row()
+        col = row.column()
+        col.template_list("BLS_UL_List", "Profile_List", props, "profile_list", props, "list_index", rows=5)
+        
+        col = row.column(align=True)
+        col.operator('bls_list.new_profile', icon='ZOOMIN', text="")
+        col.operator('bls_list.delete_profile', icon='ZOOMOUT', text="")
+        col.operator('bls_list.copy_profile', icon='GHOST', text="")
+        
+        col.separator()
+        col.operator('bls_list.move_profile', text='', icon="TRIA_UP").direction = 'UP'         
+        col.operator('bls_list.move_profile', text='', icon="TRIA_DOWN").direction = 'DOWN'         
+        
+        row = layout.row()
+        
 class BlenderLightStudioPanelSelected(bpy.types.Panel):
     bl_idname = "blender_light_studio_panel_selected"
     bl_label = "Selected Light"

@@ -4,6 +4,11 @@ import os
 from . common import isFamily, family, findLightGrp
 from itertools import chain
 
+<<<<<<< HEAD
+=======
+_ = os.sep
+
+>>>>>>> origin/master
 class ListItem(bpy.types.PropertyGroup):
     """ Group of properties representing an item in the list """
     def update_name(self, context):
@@ -59,8 +64,13 @@ class LIST_OT_NewItem(bpy.types.Operator):
         
         script_file = os.path.realpath(__file__)
         dir = os.path.dirname(script_file)
+<<<<<<< HEAD
         bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
         directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
+=======
+        bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Object'+_,
+        directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Object"+_),
+>>>>>>> origin/master
         filename="BLS_PROFILE.000",
         active_layer=False)
         
@@ -311,6 +321,7 @@ class LIST_OT_MoveItem(bpy.types.Operator):
         self.move_index(context)
 
         return{'FINISHED'}
+<<<<<<< HEAD
  
 
 
@@ -354,6 +365,10 @@ class BLS_ProfileList(bpy.types.Panel):
             row.prop(item, "empty_name")
         '''
 
+=======
+
+
+>>>>>>> origin/master
 def update_list_index(self, context):
     props = context.scene.BLStudio
     
