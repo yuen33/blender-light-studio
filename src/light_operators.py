@@ -177,7 +177,8 @@ class DeleteBSLight(bpy.types.Operator):
                context.mode == 'OBJECT' and \
                context.scene.BLStudio.initialized and \
                light and \
-               (light.name.startswith('BLS_CONTROLLER') or light.name.startswith('BLS_LIGHT_MESH'))
+               light.name.startswith('BLS_') and \
+               not (light.name.startswith('BLS_PANEL') or light.name.startswith('BLS_PROFILE'))
 
     def execute(self, context):
         scene = context.scene

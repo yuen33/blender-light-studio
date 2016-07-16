@@ -1,10 +1,11 @@
 import bpy
 from bpy.props import BoolProperty
+from . common import findLightGrp
 
 class DeleteOperator(bpy.types.Operator):
     """ Custom delete """
     bl_idname = "object.delete_custom" 
-    bl_label = "Delete"
+    bl_label = "Custom delete"
     bl_options = {'REGISTER', 'UNDO'}
 
     use_global = BoolProperty(default = False)
@@ -14,13 +15,14 @@ class DeleteOperator(bpy.types.Operator):
         return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'
     
     def execute(self, context):
-        for obj in context.selected_objects:
-            if obj.protected :
-                obj.select = False
-                self.report({'WARNING'}, obj.name +' is protected')
-
+        protected_groups = [findLightGrp(ob) for ob in context.selected_objects if ob.protected]
+        protected_objects = (ob for ob in context.selected_objects if ob.protected)
+        
+        for obj in protected_objects:
+            context.scene.objects.active = obj
+            bpy.ops.scene.delete_blender_studio_light()
+        
         bpy.ops.object.delete(use_global=self.use_global)
-        #change the property
 
         return {'FINISHED'}
 
@@ -32,24 +34,31 @@ class DeleteOperator(bpy.types.Operator):
         layout = self.layout
         col = layout.column(align=True)
         col.label(text="OK?")
+        
+addon_keymaps = []
+def add_shortkeys():       
+    wm = bpy.context.window_manager
+    addon_km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
+    
+    addon_kmi = addon_km.keymap_items.new(DeleteOperator.bl_idname, 'X', 'PRESS')
+    addon_kmi.properties.use_global = False
+    
+    addon_kmi = addon_km.keymap_items.new(DeleteOperator.bl_idname, 'X', 'PRESS')
+    addon_kmi.shift = True
+    addon_kmi.properties.use_global = True
+    
+    addon_kmi = addon_km.keymap_items.new(DeleteOperator.bl_idname, 'DEL', 'PRESS')
+    addon_kmi.properties.use_global = False
+    
+    addon_kmi = addon_km.keymap_items.new(DeleteOperator.bl_idname, 'DEL', 'PRESS')
+    addon_kmi.shift = True
+    addon_kmi.properties.use_global = True
+    
+    addon_keymaps.append(addon_km)
 
-def replace_shortkey( old_op_name, new_op_name) :
-        wm = bpy.context.window_manager
-        keyconfig = wm.keyconfigs.active
-        keymap = keyconfig.keymaps['Object Mode']
-        items = keymap.keymap_items
-
-        item = items.get(old_op_name, None)
-        while item :
-
-                props = item.properties
-
-                use_global = props.use_global.real
-
-                item.idname = new_op_name
-
-                props.use_global = use_global
-
-                item = items.get( old_op_name, None)
-
-
+def remove_shortkeys():
+    wm = bpy.context.window_manager
+    for km in addon_keymaps:
+        wm.keyconfigs.addon.keymaps.remove(km)
+        
+    addon_keymaps.clear()

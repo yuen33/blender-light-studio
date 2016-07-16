@@ -4,11 +4,8 @@ import os
 from . common import isFamily, family, findLightGrp
 from itertools import chain
 
-<<<<<<< HEAD
-=======
 _ = os.sep
 
->>>>>>> origin/master
 class ListItem(bpy.types.PropertyGroup):
     """ Group of properties representing an item in the list """
     def update_name(self, context):
@@ -64,13 +61,8 @@ class LIST_OT_NewItem(bpy.types.Operator):
         
         script_file = os.path.realpath(__file__)
         dir = os.path.dirname(script_file)
-<<<<<<< HEAD
-        bpy.ops.wm.append(filepath='//BLS_V1_02_simple.blend\\Object\\',
-        directory=os.path.join(dir,"BLS_V1_02_simple.blend\\Object\\"),
-=======
         bpy.ops.wm.append(filepath=_+'BLS_V1_02_simple.blend'+_+'Object'+_,
         directory=os.path.join(dir,"BLS_V1_02_simple.blend"+_+"Object"+_),
->>>>>>> origin/master
         filename="BLS_PROFILE.000",
         active_layer=False)
         
@@ -321,54 +313,8 @@ class LIST_OT_MoveItem(bpy.types.Operator):
         self.move_index(context)
 
         return{'FINISHED'}
-<<<<<<< HEAD
- 
 
 
-class BLS_ProfileList(bpy.types.Panel):
-    bl_idname = "bls_profile_list"
-    bl_label = "Profiles"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Light Studio"
-    
-    @classmethod
-    def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized
-            
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-        
-        props = scene.BLStudio
-        
-        row = layout.row()
-        col = row.column()
-        col.template_list("BLS_UL_List", "Profile_List", props, "profile_list", props, "list_index", rows=5)
-        
-        col = row.column(align=True)
-        col.operator('bls_list.new_profile', icon='ZOOMIN', text="")
-        col.operator('bls_list.delete_profile', icon='ZOOMOUT', text="")
-        col.operator('bls_list.copy_profile', icon='GHOST', text="")
-        
-        col.separator()
-        col.operator('bls_list.move_profile', text='', icon="TRIA_UP").direction = 'UP'         
-        col.operator('bls_list.move_profile', text='', icon="TRIA_DOWN").direction = 'DOWN'         
-        
-        row = layout.row()
-        
-        '''    
-        if props.list_index >= 0 and len(props.profile_list) > 0:
-            item = props.profile_list[props.list_index]
-            row = layout.row()
-            row.prop(item, "name")
-            row.prop(item, "empty_name")
-        '''
-
-=======
-
-
->>>>>>> origin/master
 def update_list_index(self, context):
     props = context.scene.BLStudio
     
