@@ -2,16 +2,10 @@ import bpy
 from bpy.props import BoolProperty, PointerProperty, FloatProperty, CollectionProperty, IntProperty, StringProperty
 from . window_operations import splitV3DtoBLS
 from . light_profiles import ListItem, update_list_index
-from . common import isFamily, family, findLightGrp, refreshMaterials
+from . common import isFamily, family, findLightGrp, getLightMesh, refreshMaterials
 import os
 
 _ = os.sep
-
-def getLightMesh():
-    obs = bpy.context.scene.objects
-    lightGrp = obs.active
-    light_no = lightGrp.name.split('.')[1]
-    return obs[obs.find('BLS_LIGHT_MESH.'+light_no)]
 
 class Blender_Light_Studio_Properties(bpy.types.PropertyGroup):
     initialized = BoolProperty(default = False)
@@ -31,6 +25,23 @@ class Blender_Light_Studio_Properties(bpy.types.PropertyGroup):
         light.hide = context
         bpy.context.scene.frame_current = bpy.context.scene.frame_current # refresh hack
         refreshMaterials()
+    '''    
+    def get_light_tex(self):
+        tex = getLightMesh().active_material.node_tree.nodes["Light Texture"].image.filepath
+        tex = os.path.split(tex)[1]
+        if bpy.context.window_manager.bls_tex_previews != tex:
+            bpy.context.window_manager.bls_tex_previews = tex
+        return tex
+        
+    def set_light_tex(self, context):
+        light = getLightMesh()
+        script_file = os.path.realpath(__file__)
+        dir = os.path.dirname(script_file)
+        directory=os.path.join(dir,"textures_realLights"+_)
+        
+        light.active_material.node_tree.nodes["Light Texture"].image.filepath = directory + context
+    light_tex = StringProperty(name="Light Texture", default="", set=set_light_tex, get=get_light_tex)
+    '''    
     
     light_radius = FloatProperty(name="Light Distance", default=30.0, min=0.5, set=set_light_x, step=5, get=get_light_x)
     light_muted = BoolProperty(name="Mute Light", default=False, set=set_light_hidden, get=get_light_hidden)
@@ -364,4 +375,24 @@ class BlenderLightStudioPanelSelected(bpy.types.Panel):
             col = layout.column(align=True)
             col.operator('object.mute_other_lights')
             col.operator('object.show_all_lights')
+            
+            wm = context.window_manager
+            
+            
+            #TODO: validate material. check inputs. texture/color switch. better input names. texture names
+            #if "Light Texture" in 
+            box = layout.box()
+            col = box.column()
+            col.template_icon_view(wm, "bls_tex_previews", show_labels=True)
+            col.label(os.path.splitext(wm.bls_tex_previews)[0])
+            #col.prop(context.scene.BLStudio, 'light_tex')
+            
+            bls_inputs = getLightMesh().active_material.node_tree.nodes["Group"].inputs
+            layout.prop(bls_inputs['COLOR'], 'default_value', "Color")
+            col = layout.column(align=True)
+            col.prop(bls_inputs['INTENSITY'], 'default_value', "Intensity")
+            col.prop(bls_inputs['OPACITY'], 'default_value', "Opacity")
+            col.prop(bls_inputs['FALOFF'], 'default_value', "Faloff")
+            col.prop(bls_inputs['COLOR_SATURATION'], 'default_value', "Saturation")
+            col.prop(bls_inputs['HALF'], 'default_value', "Half")
             
