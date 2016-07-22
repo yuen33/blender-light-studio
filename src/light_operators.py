@@ -24,24 +24,7 @@ class Blender_Light_Studio_Properties(bpy.types.PropertyGroup):
         light.hide_render = context
         light.hide = context
         bpy.context.scene.frame_current = bpy.context.scene.frame_current # refresh hack
-        refreshMaterials()
-    '''    
-    def get_light_tex(self):
-        tex = getLightMesh().active_material.node_tree.nodes["Light Texture"].image.filepath
-        tex = os.path.split(tex)[1]
-        if bpy.context.window_manager.bls_tex_previews != tex:
-            bpy.context.window_manager.bls_tex_previews = tex
-        return tex
-        
-    def set_light_tex(self, context):
-        light = getLightMesh()
-        script_file = os.path.realpath(__file__)
-        dir = os.path.dirname(script_file)
-        directory=os.path.join(dir,"textures_realLights"+_)
-        
-        light.active_material.node_tree.nodes["Light Texture"].image.filepath = directory + context
-    light_tex = StringProperty(name="Light Texture", default="", set=set_light_tex, get=get_light_tex)
-    '''    
+        refreshMaterials()  
     
     light_radius = FloatProperty(name="Light Distance", default=30.0, min=0.5, set=set_light_x, step=5, get=get_light_x)
     light_muted = BoolProperty(name="Mute Light", default=False, set=set_light_hidden, get=get_light_hidden)
@@ -177,7 +160,7 @@ class AddBSLight(bpy.types.Operator):
     
 class DeleteBSLight(bpy.types.Operator):
     bl_idname = "scene.delete_blender_studio_light"
-    bl_label = "Delete Studio Light"
+    bl_label = "Delete BLS Light"
     bl_description = "Delete selected Light from Studio"
     bl_options = {"REGISTER", "UNDO"}
     
@@ -218,6 +201,15 @@ class DeleteBSLight(bpy.types.Operator):
                 
         return {"FINISHED"}
     
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+    
+    def draw(self, context):
+        layout = self.layout
+        col = layout.column(align=True)
+        col.label(text="OK?")
+    
 class PrepareBSLV3D(bpy.types.Operator):
     bl_idname = "scene.prepare_blender_studio_light"
     bl_label = "Prepare Layout"
@@ -241,7 +233,8 @@ class BSL_MuteOtherLights(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized \
+            and context.scene.objects.active and (context.scene.objects.active.name.startswith('BLS_CONTROLLER') or context.scene.objects.active.name.startswith('BLS_LIGHT_MESH'))
     
     def execute(self, context):
         obs = context.scene.objects
@@ -302,7 +295,79 @@ class BlenderLightStudioPanelStudio(bpy.types.Panel):
         if not context.scene.BLStudio.initialized: col.operator('scene.create_blender_light_studio')
         if context.scene.BLStudio.initialized: col.operator('scene.delete_blender_light_studio')
         col.operator('scene.prepare_blender_studio_light')
-
+        
+class BlenderLightStudioPanelLight(bpy.types.Panel):
+    bl_idname = "blender_light_studio_panel_light"
+    bl_label = "Lights"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Light Studio"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and len(context.scene.BLStudio.profile_list)
+    
+    def draw(self, context):
+        layout = self.layout
+        col = layout.column(align=True)
+        row = col.row(align=True)
+        row.operator('scene.add_blender_studio_light', text='Add Light')
+        row.operator('scene.delete_blender_studio_light', text='Delete Light')
+        
+class BlenderLightStudioPanelSelected(bpy.types.Panel):
+    bl_idname = "blender_light_studio_panel_selected"
+    bl_label = "Selected Light"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Light Studio"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'    
+    
+    def draw(self, context):
+        if context.scene.objects.active and (context.scene.objects.active.name.startswith('BLS_CONTROLLER') or context.scene.objects.active.name.startswith('BLS_LIGHT_MESH')):
+            layout = self.layout
+            wm = context.window_manager
+            #TODO: better input names. texture names
+            box = layout.box()
+            col = box.column()
+            col.template_icon_view(wm, "bls_tex_previews", show_labels=True)
+            col.label(os.path.splitext(wm.bls_tex_previews)[0])
+            
+            col = layout.column(align=True)
+            col.prop(context.scene.BLStudio, 'light_radius')
+            col.prop(context.scene.BLStudio, 'light_muted')
+            
+            layout.separator()
+            try:
+                bls_inputs = getLightMesh().active_material.node_tree.nodes["Group"].inputs
+                for input in bls_inputs[1:]:
+                    if input.type == "RGBA":
+                        layout.prop(input, 'default_value', input.name)
+                        col = layout.column(align=True)
+                    else:
+                        col.prop(input, 'default_value', input.name)
+            except:
+                col.label("BLS_light material is not valid.")
+                
+class BlenderLightStudioPanelVisibility(bpy.types.Panel):
+    bl_idname = "blender_light_studio_panel_visibility"
+    bl_label = "Visibility Options"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Light Studio"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and len(context.scene.BLStudio.profile_list)
+    
+    def draw(self, context):
+        layout = self.layout
+        col = layout.column(align=True)
+        col.operator('object.mute_other_lights')
+        col.operator('object.show_all_lights')
+            
 class BLS_ProfileList(bpy.types.Panel):
     bl_idname = "bls_profile_list"
     bl_label = "Profiles"
@@ -334,68 +399,3 @@ class BLS_ProfileList(bpy.types.Panel):
         col.operator('bls_list.move_profile', text='', icon="TRIA_DOWN").direction = 'DOWN'         
         
         row = layout.row()
-        
-class BlenderLightStudioPanelLight(bpy.types.Panel):
-    bl_idname = "blender_light_studio_panel_light"
-    bl_label = "Lights"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Light Studio"
-    
-    @classmethod
-    def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and len(context.scene.BLStudio.profile_list)
-    
-    def draw(self, context):
-        layout = self.layout
-        col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator('scene.add_blender_studio_light', text='Add Light')
-        row.operator('scene.delete_blender_studio_light', text='Delete Light')
-
-        
-class BlenderLightStudioPanelSelected(bpy.types.Panel):
-    bl_idname = "blender_light_studio_panel_selected"
-    bl_label = "Selected Light"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Light Studio"
-    
-    @classmethod
-    def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT'    
-    
-    def draw(self, context):
-        if context.scene.objects.active and (context.scene.objects.active.name.startswith('BLS_CONTROLLER') or context.scene.objects.active.name.startswith('BLS_LIGHT_MESH')):
-            layout = self.layout
-            col = layout.column(align=True)
-            col.prop(context.scene.BLStudio, 'light_radius')
-    
-            col = layout.column(align=True)
-            col.prop(context.scene.BLStudio, 'light_muted')
-            col = layout.column(align=True)
-            col.operator('object.mute_other_lights')
-            col.operator('object.show_all_lights')
-            
-            layout.separator()
-            
-            wm = context.window_manager
-            
-            
-            #TODO: validate material. check inputs. texture/color switch. better input names. texture names
-            #if "Light Texture" in 
-            box = layout.box()
-            col = box.column()
-            col.template_icon_view(wm, "bls_tex_previews", show_labels=True)
-            col.label(os.path.splitext(wm.bls_tex_previews)[0])
-            #col.prop(context.scene.BLStudio, 'light_tex')
-            
-            bls_inputs = getLightMesh().active_material.node_tree.nodes["Group"].inputs
-            layout.prop(bls_inputs['COLOR'], 'default_value', "Color")
-            col = layout.column(align=True)
-            col.prop(bls_inputs['INTENSITY'], 'default_value', "Intensity")
-            col.prop(bls_inputs['OPACITY'], 'default_value', "Opacity")
-            col.prop(bls_inputs['FALOFF'], 'default_value', "Faloff")
-            col.prop(bls_inputs['COLOR_SATURATION'], 'default_value', "Saturation")
-            col.prop(bls_inputs['HALF'], 'default_value', "Half")
-            

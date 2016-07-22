@@ -3,6 +3,7 @@ import bpy
 from . common import getLightMesh, isFamily
 
 _ = os.sep
+    
 def enum_previews_from_directory_items(self, context):
     """EnumProperty callback"""
     enum_items = []
@@ -14,7 +15,7 @@ def enum_previews_from_directory_items(self, context):
     
     script_file = os.path.realpath(__file__)
     dir = os.path.dirname(script_file)
-    directory=os.path.join(dir,"textures_realLights"+_)
+    directory=os.path.join(dir,"textures_real_lights"+_)
 
     # Get the preview collection (defined in register func).
     pcoll = preview_collections["main"]
@@ -47,7 +48,7 @@ def enum_previews_from_directory_items(self, context):
 # however in this example we only store "main"
 preview_collections = {}
 
-def preview_enum_get(self):
+def preview_enum_get(wm):
     nodes = getLightMesh().active_material.node_tree.nodes
     if not "Light Texture" in nodes:
         return -1
@@ -64,13 +65,13 @@ def preview_enum_get(self):
 def preview_enum_set(wm, context):
     print("Set preview = %s" % context)
     name = preview_collections["main"].tex_previews[context][0]
-    #bpy.context.scene.BLStudio.light_tex = name
     
     light = getLightMesh()
     script_file = os.path.realpath(__file__)
     dir = os.path.dirname(script_file)
-    directory=os.path.join(dir,"textures_realLights"+_)
+    directory=os.path.join(dir,"textures_real_lights"+_)
     light.active_material.node_tree.nodes["Light Texture"].image.filepath = directory + name
+    
     return None
 
 def register():

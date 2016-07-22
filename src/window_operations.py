@@ -61,7 +61,7 @@ def splitV3DtoBLS(context):
     if ctrlPanel.spaces[0].region_3d.is_perspective: bpy.ops.view3d.view_persportho(override)
     bpy.ops.view3d.viewnumpad(override, type = 'TOP')
     
-    nodeEditor = split_area(window,screen,region,ctrlPanel,"NODE_EDITOR",direction="VERTICAL",factor=0.51)
+    #nodeEditor = split_area(window,screen,region,ctrlPanel,"NODE_EDITOR",direction="VERTICAL",factor=0.51)
     
     main.type = "VIEW_3D"
     
@@ -88,9 +88,3 @@ def example_layout(context):
     #split3 = split_area(window,screen,region,other,"IMAGE_EDITOR",direction="VERTICAL",factor=0.7)
     #split4 = split_area(window,screen,region,other,"VIEW_3D",direction="VERTICAL",factor=0.7)
 '''
-
-if __name__ == "__main__":
-    #teardown(bpy.context)
-    #example_layout(bpy.context)
-    
-    splitV3DtoBLS(bpy.context)
