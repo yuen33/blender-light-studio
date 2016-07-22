@@ -295,7 +295,39 @@ class BlenderLightStudioPanelStudio(bpy.types.Panel):
         if not context.scene.BLStudio.initialized: col.operator('scene.create_blender_light_studio')
         if context.scene.BLStudio.initialized: col.operator('scene.delete_blender_light_studio')
         col.operator('scene.prepare_blender_studio_light')
+
+class BLS_ProfileList(bpy.types.Panel):
+    bl_idname = "bls_profile_list"
+    bl_label = "Profiles"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Light Studio"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized
+            
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
         
+        props = scene.BLStudio
+        
+        row = layout.row()
+        col = row.column()
+        col.template_list("BLS_UL_List", "Profile_List", props, "profile_list", props, "list_index", rows=5)
+        
+        col = row.column(align=True)
+        col.operator('bls_list.new_profile', icon='ZOOMIN', text="")
+        col.operator('bls_list.delete_profile', icon='ZOOMOUT', text="")
+        col.operator('bls_list.copy_profile', icon='GHOST', text="")
+        
+        col.separator()
+        col.operator('bls_list.move_profile', text='', icon="TRIA_UP").direction = 'UP'         
+        col.operator('bls_list.move_profile', text='', icon="TRIA_DOWN").direction = 'DOWN'         
+        
+        row = layout.row()
+                
 class BlenderLightStudioPanelLight(bpy.types.Panel):
     bl_idname = "blender_light_studio_panel_light"
     bl_label = "Lights"
@@ -329,14 +361,13 @@ class BlenderLightStudioPanelSelected(bpy.types.Panel):
         if context.scene.objects.active and (context.scene.objects.active.name.startswith('BLS_CONTROLLER') or context.scene.objects.active.name.startswith('BLS_LIGHT_MESH')):
             layout = self.layout
             wm = context.window_manager
-            #TODO: better input names. texture names
+            
             box = layout.box()
             col = box.column()
             col.template_icon_view(wm, "bls_tex_previews", show_labels=True)
             col.label(os.path.splitext(wm.bls_tex_previews)[0])
             
             col = layout.column(align=True)
-            col.prop(context.scene.BLStudio, 'light_radius')
             col.prop(context.scene.BLStudio, 'light_muted')
             
             layout.separator()
@@ -350,6 +381,7 @@ class BlenderLightStudioPanelSelected(bpy.types.Panel):
                         col.prop(input, 'default_value', input.name)
             except:
                 col.label("BLS_light material is not valid.")
+            col.prop(context.scene.BLStudio, 'light_radius')
                 
 class BlenderLightStudioPanelVisibility(bpy.types.Panel):
     bl_idname = "blender_light_studio_panel_visibility"
@@ -367,35 +399,4 @@ class BlenderLightStudioPanelVisibility(bpy.types.Panel):
         col = layout.column(align=True)
         col.operator('object.mute_other_lights')
         col.operator('object.show_all_lights')
-            
-class BLS_ProfileList(bpy.types.Panel):
-    bl_idname = "bls_profile_list"
-    bl_label = "Profiles"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
-    bl_category = "Light Studio"
-    
-    @classmethod
-    def poll(cls, context):
-        return context.area.type == 'VIEW_3D' and context.mode == 'OBJECT' and context.scene.BLStudio.initialized
-            
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
         
-        props = scene.BLStudio
-        
-        row = layout.row()
-        col = row.column()
-        col.template_list("BLS_UL_List", "Profile_List", props, "profile_list", props, "list_index", rows=5)
-        
-        col = row.column(align=True)
-        col.operator('bls_list.new_profile', icon='ZOOMIN', text="")
-        col.operator('bls_list.delete_profile', icon='ZOOMOUT', text="")
-        col.operator('bls_list.copy_profile', icon='GHOST', text="")
-        
-        col.separator()
-        col.operator('bls_list.move_profile', text='', icon="TRIA_UP").direction = 'UP'         
-        col.operator('bls_list.move_profile', text='', icon="TRIA_DOWN").direction = 'DOWN'         
-        
-        row = layout.row()
