@@ -30,6 +30,12 @@ def findLightGrp(ob):
         if ob.name.startswith('BLS_LIGHT_GRP.'): return ob
     return None
 
+def getLightMesh():
+    obs = bpy.context.scene.objects
+    lightGrp = obs.active
+    light_no = lightGrp.name.split('.')[1]
+    return obs[obs.find('BLS_LIGHT_MESH.'+light_no)]
+
 import bpy
 def refreshMaterials():
     #controllers = [ob for ob in family(findLightGrp(context.active_object).parent) if ob.name.startswith('BLS_CONTROLLER.')]
