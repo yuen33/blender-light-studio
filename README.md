@@ -13,8 +13,7 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Each light can have different light texture
   - Toggle lights
   - Isolate light
-  - Protected by accidental deletes (Use "Delete Light" button instead)
-  - Lights are selectable to use render layers
+  - Lights are selectable to use with render layers
 
 ## Written by
   - LeoMoon Studios
@@ -26,6 +25,13 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - Maciek Ptaszynski
 
 ## Changelog
+  - 2.1:
+    - Added the ability to delete lights like other objects
+    - Added more HDR lights
+    - Added light previews
+    - All HDR lights now have transparency
+    - GUI changes
+    - Bug fixes
   - 2.0.2: Fix for linux
   - 2.0.1:
     - Added Light Profiles feature
@@ -62,10 +68,10 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
   - 12: Happy Blending!
 
 ## Future Ideas to Implement
-  - Change [Add Light] to show a list of available lights instead of changing light texture after creating one...
+  - Add lights by clicking in the 3d view port
 
 ## Donations
 Speed of future developments depends on donations. 100% of donations will go towards development of this plugin. Your donatoins are much appreciated. You can donate to my [leomoon] gmail account with the subject of Blender Light Studio Development.
 
 ## Compatibility
-Tested with Blender 2.75a
+Tested with Blender 2.77a
