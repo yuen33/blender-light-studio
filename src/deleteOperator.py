@@ -5,7 +5,7 @@ from . common import findLightGrp
 class DeleteOperator(bpy.types.Operator):
     """ Custom delete """
     bl_idname = "object.delete_custom" 
-    bl_label = "Custom delete"
+    bl_label = "Custom Delete"
     bl_options = {'REGISTER', 'UNDO'}
 
     use_global = BoolProperty(default = False)
@@ -28,12 +28,7 @@ class DeleteOperator(bpy.types.Operator):
 
     def invoke(self, context, event):
         wm = context.window_manager
-        return wm.invoke_props_dialog(self, width=100)
-            
-    def draw(self, context):
-        layout = self.layout
-        col = layout.column(align=True)
-        col.label(text="OK?")
+        return wm.invoke_confirm(self, event)
         
 addon_keymaps = []
 def add_shortkeys():       
