@@ -69,9 +69,10 @@ Introducing Light Studio plugin for Blender. Based on a prototype by Maciek Ptas
 
 ## Future Ideas to Implement
   - Add lights by clicking in the 3d view port
+  - Add ability to export (render) the light setup as environment texture (Equirectangular Panoramic)
 
 ## Donations
-Speed of future developments depends on donations. 100% of donations will go towards development of this plugin. Your donatoins are much appreciated. You can donate to my [leomoon] gmail account with the subject of Blender Light Studio Development.
+Speed of future developments depends on donations. 100% of donations will go towards development of this plugin. Your donatoins are much appreciated. You can donate using [THIS LINK](https://www.paypal.me/aminpersia).
 
 ## Compatibility
 Tested with Blender 2.77a
